@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You | GreenField Lavender</title>
+    <link rel="stylesheet" href="./assets/scss/style.css" />
+    <link
+      rel="shortcut icon"
+      href="./assets/images/faviocn.png"
+      type="image/x-icon"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("assets/images/Lavendar_Brand_Brochure_Pg1.jpg")
+          no-repeat center center fixed;
+        background-size: cover; /* 🔥 ensures image fills entire screen */
+        background-position: center; /* keeps it centered on resize */
+        background-repeat: no-repeat; /* avoid any tiling */
+        text-align: center;
+      }
+      .thankyou-box {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        backdrop-filter: blur(8px);
+        animation: fadeIn 1s ease;
+      }
+      h1 {
+        font-size: 32px;
+        margin-bottom: 15px;
+        font-family: "sacred valley", serif !important;
+      }
+      p {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-family: "plus jakarta sans", sans-serif !important;
+      }
+      .redirect {
+        margin-top: 15px;
+        font-size: 14px;
+        opacity: 0.8;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-5QMCSKGN66"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-5QMCSKGN66");
+    </script>
+    <!-- Event snippet for lead form conversion page -->
+    <script>
+      gtag("event", "conversion", {
+        send_to: "AW-675066068/DG-tCO2E1psYENTh8sEC",
+      });
+    </script>
+  </head>
+  <body>
+    <div class="thankyou-box">
+      <h1>Thank You!</h1>
+      <p>Your enquiry has been received.</p>
+      <p>Our team will get back to you shortly.</p>
+      <p class="redirect">
+        You will be redirected in <span id="countdown">5</span> seconds...
+      </p>
+    </div>
+
+    <script>
+      let seconds = 5;
+      const countdownEl = document.getElementById("countdown");
+
+      const timer = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(timer);
+          window.location.href = "https://www.greenfieldhousingindia.com/";
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
