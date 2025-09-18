@@ -704,39 +704,39 @@
     });
   </script>
   <!-- Validation -->
+  <!-- ✅ Script for enquiry-form1 -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const sheetURL =
         "https://script.google.com/macros/s/AKfycbxlPQE1M48uP4RmOwSEqW94EqSST6Fnzyhz1HwhVkdLIWKzq2SanfiiIX7eHdZx1ZFk/exec";
       const crmURL = "https://aubackend.adventurus.in/api/webhook/third-party";
 
-      // ✅ Reusable function
-      function handleFormSubmit(form, hasDownload = false) {
-        form.addEventListener("submit", function (e) {
+      const form1 = document.getElementById("enquiry-form1");
+      if (form1) {
+        form1.addEventListener("submit", function (e) {
           e.preventDefault();
 
-          // ---- reCAPTCHA validation (scoped to form) ----
-          const captchaWidget = form.querySelector(".g-recaptcha iframe");
+          // reCAPTCHA validation for form1
           const captchaResponse = grecaptcha.getResponse();
           if (!captchaResponse) {
             alert("Please complete the reCAPTCHA before submitting.");
             return;
           }
 
-          const submitBtn = form.querySelector("button[type='submit']");
+          const submitBtn = form1.querySelector("button[type='submit']");
           const originalText = submitBtn.textContent;
           submitBtn.textContent = "Submitting...";
           submitBtn.disabled = true;
 
-          const formData = new FormData(form);
+          const formData = new FormData(form1);
           formData.append("g-recaptcha-response", captchaResponse);
 
-          // ---- 1. Submit to Google Sheets ----
+          // 1. Google Sheets
           fetch(sheetURL, { method: "POST", body: formData })
             .then((res) => res.json())
             .then((data) => {
               if (data.result === "success") {
-                // ---- 2. Also submit to Adventurus CRM ----
+                // 2. CRM
                 const crmPayload = {
                   leadEmail: formData.get("email"),
                   leadPhoneNumber: "+91" + formData.get("phone"),
@@ -758,33 +758,30 @@
             })
             .then((res) => (res ? res.json() : null))
             .then((crmRes) => {
-              console.log("CRM response:", crmRes);
-              form.reset();
-
-              // ✅ reset only this reCAPTCHA widget
+              console.log("CRM response (Form1):", crmRes);
+              form1.reset();
               grecaptcha.reset();
 
-              if (hasDownload) {
-                const type = document.getElementById("downloadType").value;
-                const pdfFiles = {
-                  apartmentvilla: "Lavendar_Floor_Plan.pdf",
-                  brochure: "Lavendar_Brand_Brochure.pdf",
-                };
-                if (type && pdfFiles[type]) {
-                  const pdf = pdfFiles[type];
-                  const link = document.createElement("a");
-                  link.href = pdf;
-                  link.download = pdf;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                }
+              // PDF download (only for form1)
+              const type = document.getElementById("downloadType").value;
+              const pdfFiles = {
+                apartmentvilla: "Lavendar_Floor_Plan.pdf",
+                brochure: "Lavendar_Brand_Brochure.pdf",
+              };
+              if (type && pdfFiles[type]) {
+                const pdf = pdfFiles[type];
+                const link = document.createElement("a");
+                link.href = pdf;
+                link.download = pdf;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
               }
 
               window.location.href = "thankyou.html";
             })
             .catch((err) => {
-              console.error("Error:", err);
+              console.error("Error (Form1):", err);
               alert("Failed to submit form.");
             })
             .finally(() => {
@@ -793,13 +790,77 @@
             });
         });
       }
-
-      // Attach to both forms
-      const form1 = document.getElementById("enquiry-form1");
-      if (form1) handleFormSubmit(form1, true);
+    });
+  </script>
+  <!-- ✅ Script for enquiryForm -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const sheetURL =
+        "https://script.google.com/macros/s/AKfycbxlPQE1M48uP4RmOwSEqW94EqSST6Fnzyhz1HwhVkdLIWKzq2SanfiiIX7eHdZx1ZFk/exec";
+      const crmURL = "https://aubackend.adventurus.in/api/webhook/third-party";
 
       const form2 = document.getElementById("enquiryForm");
-      if (form2) handleFormSubmit(form2, false);
+      if (form2) {
+        form2.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // reCAPTCHA validation for form2
+          const captchaResponse = grecaptcha.getResponse();
+          if (!captchaResponse) {
+            alert("Please complete the reCAPTCHA before submitting.");
+            return;
+          }
+
+          const submitBtn = form2.querySelector("button[type='submit']");
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = "Submitting...";
+          submitBtn.disabled = true;
+
+          const formData = new FormData(form2);
+          formData.append("g-recaptcha-response", captchaResponse);
+
+          // 1. Google Sheets
+          fetch(sheetURL, { method: "POST", body: formData })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.result === "success") {
+                // 2. CRM
+                const crmPayload = {
+                  leadEmail: formData.get("email"),
+                  leadPhoneNumber: "+91" + formData.get("phone"),
+                  leadSource: "Google",
+                  leadStatus: "New",
+                  leadName: formData.get("name"),
+                  project: 5,
+                  createBy: 6,
+                  leadNotes: formData.get("message"),
+                  company_id: 3,
+                };
+
+                return fetch(crmURL, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(crmPayload),
+                });
+              }
+            })
+            .then((res) => (res ? res.json() : null))
+            .then((crmRes) => {
+              console.log("CRM response (Form2):", crmRes);
+              form2.reset();
+              grecaptcha.reset();
+              window.location.href = "thankyou.html";
+            })
+            .catch((err) => {
+              console.error("Error (Form2):", err);
+              alert("Failed to submit form.");
+            })
+            .finally(() => {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            });
+        });
+      }
     });
   </script>
 </html>
