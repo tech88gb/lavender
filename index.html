@@ -448,11 +448,6 @@
                 <textarea name="message" rows="5"></textarea>
                 <label>Your Message</label>
               </div>
-              <!-- reCAPTCHA -->
-              <div
-                class="g-recaptcha"
-                data-sitekey="6Ld3KMArAAAAAIor_SQCQX7s_qRPs9vsWfHlj7yL"
-              ></div>
               <button type="submit" class="styled-btn">Send Message</button>
             </form>
           </div>
@@ -804,20 +799,12 @@
         form2.addEventListener("submit", function (e) {
           e.preventDefault();
 
-          // reCAPTCHA validation for form2
-          const captchaResponse = grecaptcha.getResponse();
-          if (!captchaResponse) {
-            alert("Please complete the reCAPTCHA before submitting.");
-            return;
-          }
-
           const submitBtn = form2.querySelector("button[type='submit']");
           const originalText = submitBtn.textContent;
           submitBtn.textContent = "Submitting...";
           submitBtn.disabled = true;
 
           const formData = new FormData(form2);
-          formData.append("g-recaptcha-response", captchaResponse);
 
           // 1. Google Sheets
           fetch(sheetURL, { method: "POST", body: formData })
@@ -848,7 +835,6 @@
             .then((crmRes) => {
               console.log("CRM response (Form2):", crmRes);
               form2.reset();
-              grecaptcha.reset();
               window.location.href = "thankyou.html";
             })
             .catch((err) => {
